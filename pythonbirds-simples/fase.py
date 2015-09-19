@@ -115,17 +115,13 @@ class Fase():
         :param tempo: tempo para o qual devem ser calculados os pontos
         :return: objeto do tipo Ponto
         """
-        x,y = 20,0
         pontos = []
         for passaro in self._passaros:
             passaro.calcular_posicao(tempo)
-            if passaro.foi_lancado() and passaro.status == 'Ativo':
-                for ator in chain(self._porcos,self._obstaculos):
-                    passaro.colidir(ator,self.intervalo_de_colisao)
-                    passaro.colidir_com_chao()
-                    x,y = passaro.x,passaro.y   
-            pontos.append(Ponto(x,y,passaro.caracter()))
-            
+            for ator in chain(self._porcos,self._obstaculos):
+                passaro.colidir(ator,self.intervalo_de_colisao)
+                passaro.colidir_com_chao()
+            pontos.append(Ponto(passaro.x,passaro.y,passaro.caracter()))  
 
         for ator in chain(self._porcos,self._obstaculos):
             pontos.append(Ponto(ator.x,ator.y,ator.caracter()))
