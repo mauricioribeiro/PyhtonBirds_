@@ -124,6 +124,7 @@ class Fase():
             pontos.append(Ponto(passaro.x,passaro.y,passaro.caracter()))  
 
         for ator in chain(self._porcos,self._obstaculos):
+            passaro.colidir_com_chao()
             pontos.append(Ponto(ator.x,ator.y,ator.caracter()))
 
         return pontos

@@ -157,7 +157,7 @@ class PassaroAmarelo(Passaro):
 class PassaroVermelho(Passaro):
 
     velocidade_escalar = 20
-    
+
     def __init__(self, x=0, y=0):
         super().__init__(x, y)
         self._caracter_ativo = 'V'
