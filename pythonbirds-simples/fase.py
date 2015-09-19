@@ -43,7 +43,7 @@ class Fase():
 
         :param obstaculos:
         """
-        pass
+        self._obstaculos.extend(obstaculos)
 
     def adicionar_porco(self, *porcos):
         """
@@ -51,8 +51,7 @@ class Fase():
 
         :param porcos:
         """
-        #self._adicionar_ator(self._porcos, *porcos)
-        pass
+        self._porcos.extend(porcos)
 
     def adicionar_passaro(self, *passaros):
         """
@@ -60,7 +59,7 @@ class Fase():
 
         :param passaros:
         """
-        self._passaros = passaros
+        self._passaros.extend(passaros)
 
     def status(self):
         """
@@ -74,7 +73,21 @@ class Fase():
 
         :return:
         """
-        return EM_ANDAMENTO
+        porcos_ativos, passaros_ativos = 0, 0
+
+        for porco in self._porcos:
+            if porco.status == 'Ativo':
+                porcos_ativos += 1
+
+        for passaro in self._passaros:
+            if passaro.status != 'Destruido':
+                passaros_ativos += 1
+        
+        if porcos_ativos == 0:
+            return VITORIA
+        if passaros_ativos > 0:
+            return EM_ANDAMENTO
+        return DERROTA
 
     def lancar(self, angulo, tempo):
         """
@@ -87,11 +100,10 @@ class Fase():
         :param angulo: ângulo de lançamento
         :param tempo: Tempo de lançamento
         """
-        #print(self._passaros)
         for passaro in self._passaros:
             if not passaro.foi_lancado():
                 passaro.lancar(angulo,tempo)
-                pass
+                break
 
 
     def calcular_pontos(self, tempo):
@@ -103,14 +115,22 @@ class Fase():
         :param tempo: tempo para o qual devem ser calculados os pontos
         :return: objeto do tipo Ponto
         """
-        x = 0
-        pontos=[]
+        x,y = 20,0
+        pontos = []
         for passaro in self._passaros:
-            pontos.append(Ponto(x,0,passaro.caracter()))
-            x += 20
+            passaro.calcular_posicao(tempo)
+            if passaro.foi_lancado() and passaro.status == 'Ativo':
+                for ator in chain(self._porcos,self._obstaculos):
+                    passaro.colidir(ator,self.intervalo_de_colisao)
+                    passaro.colidir_com_chao()
+                    x,y = passaro.x,passaro.y   
+            pontos.append(Ponto(x,y,passaro.caracter()))
+            
+
+        for ator in chain(self._porcos,self._obstaculos):
+            pontos.append(Ponto(ator.x,ator.y,ator.caracter()))
 
         return pontos
 
     def _transformar_em_ponto(self, ator):
         return Ponto(ator.x, ator.y, ator.caracter())
-
