@@ -125,9 +125,6 @@ class Passaro(Ator):
             delta_tempo = tempo - self._tempo_de_lancamento
             self.x = self._x_inicial + self.velocidade_escalar * math.cos(self._angulo_de_lancamento) * delta_tempo
             self.y = self._y_inicial + self.velocidade_escalar * math.sin(self._angulo_de_lancamento) * delta_tempo - (GRAVIDADE * math.pow(delta_tempo,2))/2
-        else:
-            self.x = self._x_inicial
-            self.y = self._y_inicial
         return self.x,self.y
 
 
